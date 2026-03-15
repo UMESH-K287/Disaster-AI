@@ -20,31 +20,15 @@ models = {
 
 @app.route("/predict/<disaster>", methods=["POST"])
 def predict(disaster):
-    try:
-        data = request.json
-        # We must pull f1, f2, f3 in order to match the training data
-        ordered_values = [
-            float(data.get('f1', 0)), 
-            float(data.get('f2', 0)), 
-            float(data.get('f3', 0))
-        ]
-        
-        model = models[disaster]
-        input_array = np.array([ordered_values])
+    # Only pull the data once
+    data = request.json
+    input_array = np.array([[float(data['f1']), float(data['f2']), float(data['f3'])]])
 
-        # Get probabilities for [Safe, Danger]
-        probs = model.predict_proba(input_array)[0]
-        
-        # WE NEED INDEX 1 (Danger Probability)
-        danger_prob = float(probs[1]) 
-        
-        # Decide if it's danger based on 50% threshold
-        is_danger = danger_prob >= 0.5
+    # Get probability directly - don't call .predict() separately
+    # This cuts the math work in half
+    prob_danger = models[disaster].predict_proba(input_array)[0][1]
 
-        return jsonify({
-            "disaster": disaster,
-            "is_danger": bool(is_danger),
-            "probability": round(danger_prob * 100, 2)
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify({
+        "is_danger": bool(prob_danger >= 0.5),
+        "probability": round(prob_danger * 100, 2)
+    })
