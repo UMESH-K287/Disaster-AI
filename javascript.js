@@ -372,7 +372,7 @@ async function getLivePrediction() {
     resultDiv.innerHTML = "Consulting AI...";
 
     try {
-        const response = await fetch(`https://disaster-ai-1-o9ui.onrender.com/predict/${activeModel}`, {
+       const response = await fetch(`https://disaster-ai-1-o9ui.onrender.com/predict/${activeModel}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -380,30 +380,30 @@ async function getLivePrediction() {
             body: JSON.stringify(userInputs)
         });
 
-        const data = await response.json();
+        const data = await response.json(); // This is called 'data'
 
-        const prob = answer.probability; 
-                const guide = `<div style="font-size: 14px; margin-top: 15px; border-top: 1px solid #444; padding-top: 10px;">
-                                <b>Risk Guide:</b><br>
-                                0-30%: SAFE | 40-60%: MEDIUM | 70-100%: DANGER
-                               </div>`;
+        const prob = data.probability;  // Fixed: changed 'answer' to 'data'
+        const guide = `<div style="font-size: 14px; margin-top: 15px; border-top: 1px solid #444; padding-top: 10px;">
+                        <b>Risk Guide:</b><br>
+                        0-30%: SAFE | 40-60%: MEDIUM | 70-100%: DANGER
+                       </div>`;
 
-                if (prob <= 30) {
-                    resultDiv.innerHTML = `✅ SAFE AREA<br>Risk Level: ${prob}% ${guide}`;
-                    resultDiv.className = "safe";
-                } 
-                else if (prob >= 40 && prob <= 60) {
-                    resultDiv.innerHTML = `⚠️ MEDIUM RISK<br>Risk Level: ${prob}% ${guide}`;
-                    resultDiv.style.color = "#ffeb3b"; 
-                } 
-                else if (prob >= 70) {
-                    resultDiv.innerHTML = `🚨 DANGER DETECTED<br>Risk Level: ${prob}% ${guide}`;
-                    resultDiv.className = "danger";
-                }
-                else {
-                    resultDiv.innerHTML = `⚖️ UNCERTAIN<br>Risk Level: ${prob}% ${guide}`;
-                    resultDiv.style.color = "#ffffff";
-                }
+        if (prob <= 30) {
+            resultDiv.innerHTML = `✅ SAFE AREA<br>Risk Level: ${prob}% ${guide}`;
+            resultDiv.className = "safe";
+        } 
+        else if (prob >= 40 && prob <= 60) {
+            resultDiv.innerHTML = `⚠️ MEDIUM RISK<br>Risk Level: ${prob}% ${guide}`;
+            resultDiv.style.color = "#ffeb3b"; 
+        } 
+        else if (prob >= 70) {
+            resultDiv.innerHTML = `🚨 DANGER DETECTED<br>Risk Level: ${prob}% ${guide}`;
+            resultDiv.className = "danger";
+        }
+        else {
+            resultDiv.innerHTML = `⚖️ UNCERTAIN<br>Risk Level: ${prob}% ${guide}`;
+            resultDiv.style.color = "#ffffff";
+        }
     } catch (error) {
         resultDiv.innerHTML = "Error: Is your app.py running?";
     }
