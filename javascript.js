@@ -382,11 +382,28 @@ async function getLivePrediction() {
 
         const data = await response.json();
 
-        if (data.is_danger) {
-            resultDiv.innerHTML = `<span style="color:#ff4444">🚨 DANGER: ${data.probability}% Risk</span>`;
-        } else {
-            resultDiv.innerHTML = `<span style="color:#00e676">✅ SAFE: ${data.probability}% Risk</span>`;
-        }
+        const prob = answer.probability; 
+                const guide = `<div style="font-size: 14px; margin-top: 15px; border-top: 1px solid #444; padding-top: 10px;">
+                                <b>Risk Guide:</b><br>
+                                0-30%: SAFE | 40-60%: MEDIUM | 70-100%: DANGER
+                               </div>`;
+
+                if (prob <= 30) {
+                    resultDiv.innerHTML = `✅ SAFE AREA<br>Risk Level: ${prob}% ${guide}`;
+                    resultDiv.className = "safe";
+                } 
+                else if (prob >= 40 && prob <= 60) {
+                    resultDiv.innerHTML = `⚠️ MEDIUM RISK<br>Risk Level: ${prob}% ${guide}`;
+                    resultDiv.style.color = "#ffeb3b"; 
+                } 
+                else if (prob >= 70) {
+                    resultDiv.innerHTML = `🚨 DANGER DETECTED<br>Risk Level: ${prob}% ${guide}`;
+                    resultDiv.className = "danger";
+                }
+                else {
+                    resultDiv.innerHTML = `⚖️ UNCERTAIN<br>Risk Level: ${prob}% ${guide}`;
+                    resultDiv.style.color = "#ffffff";
+                }
     } catch (error) {
         resultDiv.innerHTML = "Error: Is your app.py running?";
     }
