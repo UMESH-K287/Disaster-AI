@@ -20,23 +20,27 @@ models = {
 
 @app.route("/predict/<disaster>", methods=["POST"])
 def predict(disaster):
-    if disaster not in models:
-        return jsonify({"error": "Model not found"}), 404
-
     data = request.json
     
-    # CRITICAL FIX: Ensure the features are in order f1, f2, f3
-    # This matches the 'userInputs[`f${i+1}`]' from your JavaScript
+    # This list MUST match the order used in train_models.py
+    # f1 = Monsoon, f2 = Drainage, f3 = Siltation
     try:
-        ordered_values = [data['f1'], data['f2'], data['f3']]
-    except KeyError:
-        return jsonify({"error": "Missing input fields"}), 400
+        ordered_values = [
+            float(data.get('f1', 0)), 
+            float(data.get('f2', 0)), 
+            float(data.get('f3', 0))
+        ]
+    except ValueError:
+        return jsonify({"error": "Invalid input values"}), 400
 
     model = models[disaster]
     input_array = np.array([ordered_values])
 
-    # Faster: Get probability first, then decide if it's danger
-    prob_danger = float(model.predict_proba(input_array)[0][1])
+    # Get the probability of DANGER (index 1)
+    probabilities = model.predict_proba(input_array)[0]
+    prob_danger = float(probabilities[1]) 
+    
+    # If danger is 50% or higher, mark as is_danger=True
     is_danger = prob_danger >= 0.5
 
     return jsonify({
@@ -44,6 +48,3 @@ def predict(disaster):
         "is_danger": bool(is_danger),
         "probability": round(prob_danger * 100, 2)
     })
-if __name__ == "__main__":
-    print("Server running on http://127.0.0.1:5000")
-    app.run(port=5000)
