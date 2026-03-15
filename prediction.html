@@ -86,7 +86,7 @@
             }
             
             const config = disasterConfig[activeModel];
-            document.getElementById('page-title').innerText = config.title + " Live AI";
+            document.getElementById('page-title').innerText = config.title + " prediction AI";
             
             let inputsHTML = '';
             for (let i = 0; i < config.features.length; i++) {
@@ -107,7 +107,7 @@
                 userInputs[`f${i+1}`] = parseFloat(val);
             }
 
-            resultDiv.innerHTML = "Consulting AI...";
+            resultDiv.innerHTML = "Analyzing AI...";
             resultDiv.className = "";
 
             try {
@@ -122,10 +122,10 @@
 
                 // Show result based on is_danger boolean from Python
                 if (answer.is_danger) {
-                    resultDiv.innerHTML = `🚨💀 DANGER DETECTED<br><span style="font-size: 16px;">AI Confidence: ${answer.probability}%</span>`;
+                    resultDiv.innerHTML = `🚨💀 DANGER DETECTED<br><span style="font-size: 16px;">AI Confidence: ${answer.probability}%</span><br>INFORMATION<br>0% to 30% means SAFE<br>40% to 60% means MEDIUM RISK<br>70% to 100% means DANGER';
                     resultDiv.className = "danger";
                 } else {
-                    resultDiv.innerHTML = `✅🦺 SAFE AREA<br><span style="font-size: 16px;">AI Confidence: ${answer.probability}%</span>`;
+                    resultDiv.innerHTML = `✅🦺 SAFE AREA<br><span style="font-size: 16px;">AI Confidence: ${answer.probability}%</span><br>INFORMATION<br>0% to 30% means SAFE<br>40% to 60% means MEDIUM RISK<br>70% to 100% means DANGER`;
                     resultDiv.className = "safe";
                 }
             } catch (error) {
