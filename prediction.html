@@ -116,7 +116,7 @@
 
                 const answer = await response.json();
                 const prob = answer.probability;
-                const guide = `<div class="guide-text"><b>Risk Guide:</b><br>0-30%: SAFE | 40-60%: MEDIUM | 70-100%: DANGER</div>`;
+                const guide = `<div class="guide-text"><b>Risk Guide:</b><br>0% to 30%: SAFE<br>40% to 60%: MEDIUM<br>70% to 100%: DANGER</div>`;
 
                 // LOGIC RANGES
                 if (prob <= 30) {
