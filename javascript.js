@@ -397,7 +397,7 @@ async function getLivePrediction() {
             resultDiv.style.color = "#ffeb3b"; 
         } 
         else if (prob >= 70) {
-            resultDiv.innerHTML = `🚨💀 &4&lDANGER DETECTED<br>Risk Level: ${prob}% ${guide}`;
+            resultDiv.innerHTML = `🚨💀 DANGER DETECTED<br>Risk Level: ${prob}% ${guide}`;
             resultDiv.className = "danger";
         }
         else {
