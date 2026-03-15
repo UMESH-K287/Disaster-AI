@@ -1,138 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Live disaster Prediction</title>
-    <link rel="stylesheet" href="design.css"> 
-    <style>
-        /* Matches your dark theme styling */
-        .prediction-box { 
-            background: #1a1a1a; 
-            padding: 40px; 
-            border: 2px solid #00f3ff; 
-            border-radius: 10px; 
-            width: 400px; 
-            margin: 100px auto; 
-            text-align: center; 
-            color: white; 
-            font-family: sans-serif;
-        }
-        input { 
-            width: 90%; 
-            padding: 12px; 
-            margin: 10px 0; 
-            background: #333; 
-            color: white; 
-            border: 1px solid #555; 
-            border-radius: 5px; 
-            font-size: 16px;
-        }
-        button { 
-            background: #00f3ff; 
-            color: black; 
-            padding: 12px 20px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            border: none; 
-            margin-top: 15px; 
-            width: 95%; 
-            font-size: 16px; 
-            border-radius: 5px;
-        }
-        #result { 
-            margin-top: 25px; 
-            font-size: 24px; 
-            font-weight: bold; 
-            padding: 10px; 
-        }
-        .danger { color: #ff4444; }
-        .safe { color: #00e676; }
-    </style>
+    <meta charset="UTF-8">
+    <title>Disaster Prediction</title>
+    <link rel="stylesheet" href="design.css"> 
+    <style>
+        .prediction-box { 
+            background: #1a1a1a; 
+            padding: 40px; 
+            border: 2px solid #00f3ff; 
+            border-radius: 10px; 
+            width: 400px; 
+            margin: 100px auto; 
+            text-align: center; 
+            color: white; 
+            font-family: sans-serif;
+        }
+        input { 
+            width: 90%; 
+            padding: 12px; 
+            margin: 10px 0; 
+            background: #333; 
+            color: white; 
+            border: 1px solid #555; 
+            border-radius: 5px; 
+            font-size: 16px;
+        }
+        button { 
+            background: #00f3ff; 
+            color: black; 
+            padding: 12px 20px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border: none; 
+            margin-top: 15px; 
+            width: 95%; 
+            font-size: 16px; 
+            border-radius: 5px;
+        }
+        #result { 
+            margin-top: 25px; 
+            font-size: 20px; 
+            font-weight: bold; 
+            padding: 10px; 
+        }
+        .danger { color: #ff4444; }
+        .safe { color: #00e676; }
+        .guide-text { font-size: 14px; color: #aaa; margin-top: 15px; border-top: 1px solid #444; padding-top: 10px; }
+    </style>
 </head>
 <body>
 
-    <div class="prediction-box">
-        <h2 id="page-title">Loading Model...</h2>
-        <p>Enter current sensor data below:</p>
-        
-        <div id="input-container"></div>
-        
-        <button onclick="getLivePrediction()">PREDICT</button>
-        <div id="result"></div>
-    </div>
+    <div class="prediction-box">
+        <h2 id="page-title">Loading Model🔃</h2>
+        <p>Enter current sensor data below:</p>
+        
+        <div id="input-container"></div>
+        
+        <button onclick="getLivePrediction()">PREDICT</button>
+        <div id="result"></div>
+    </div>
 
-    <script>
-        // 1. Configuration matching your app.py datasets
-        const disasterConfig = {
-            'landslide': { title: 'Landslide', features: ['Slope Steepness', 'Precipitation Level', 'Terrain Curvature'] },
-            'flood': { title: 'Flood', features: ['Monsoon Intensity', 'Drainage Systems Score', 'Siltation Score'] },
-            'cyclone': { title: 'Cyclone', features: ['Atmospheric Pressure (mb)', 'Wind Speed (km/h)', 'Humidity (%)'] },
-            'drought': { title: 'Drought', features: ['Precipitation (mm)', 'Humidity (%)', 'Average Temp (C)'] },
-            'heatwave': { title: 'Heatwave', features: ['Max Temp (C)', 'Average Temp (C)', 'Relative Humidity (%)'] },
-            'earthquake': { title: 'Earthquake', features: ['Magnitude', 'Longitude', 'Depth (km)'] },
-            'tsunami': { title: 'Tsunami', features: ['Significance Score', 'Magnitude', 'Depth (km)'] },
-            'forestfires': { title: 'Forest Fire', features: ['Relative Humidity (%)', 'Fuel Moisture (FFMC)', 'Temperature (C)'] }
-        };
+    <script>
+        const disasterConfig = {
+            'landslide': { title: 'Landslide', features: ['Slope Steepness', 'Precipitation Level', 'Terrain Curvature'] },
+            'flood': { title: 'Flood', features: ['Monsoon Intensity', 'Drainage Systems Score', 'Siltation Score'] },
+            'cyclone': { title: 'Cyclone', features: ['Atmospheric Pressure (mb)', 'Wind Speed (km/h)', 'Humidity (%)'] },
+            'drought': { title: 'Drought', features: ['Precipitation (mm)', 'Humidity (%)', 'Average Temp (C)'] },
+            'heatwave': { title: 'Heatwave', features: ['Max Temp (C)', 'Average Temp (C)', 'Relative Humidity (%)'] },
+            'earthquake': { title: 'Earthquake', features: ['Magnitude', 'Longitude', 'Depth (km)'] },
+            'tsunami': { title: 'Tsunami', features: ['Significance Score', 'Magnitude', 'Depth (km)'] },
+            'forestfires': { title: 'Forest Fire', features: ['Relative Humidity (%)', 'Fuel Moisture (FFMC)', 'Temperature (C)'] }
+        };
 
-        // 2. Read the URL to find out which disaster button was clicked
-        const urlParams = new URLSearchParams(window.location.search);
-        const activeModel = urlParams.get('model');
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeModel = urlParams.get('model');
 
-        // 3. Build the UI when the page loads
-        window.onload = function() {
-            if (!activeModel || !disasterConfig[activeModel]) {
-                document.getElementById('page-title').innerText = "Model Not Found";
-                return;
-            }
-            
-            const config = disasterConfig[activeModel];
-            document.getElementById('page-title').innerText = config.title + " prediction AI";
-            
-            let inputsHTML = '';
-            for (let i = 0; i < config.features.length; i++) {
-                inputsHTML += `<input type="number" id="input-${i}" placeholder="${config.features[i]}" step="any">`;
-            }
-            document.getElementById('input-container').innerHTML = inputsHTML;
-        };
+        window.onload = function() {
+            if (!activeModel || !disasterConfig[activeModel]) {
+                document.getElementById('page-title').innerText = "Model Not Found";
+                return;
+            }
+            
+            const config = disasterConfig[activeModel];
+            document.getElementById('page-title').innerText = config.title + " Prediction AI";
+            
+            let inputsHTML = '';
+            for (let i = 0; i < config.features.length; i++) {
+                inputsHTML += `<input type="number" id="input-${i}" placeholder="${config.features[i]}" step="any">`;
+            }
+            document.getElementById('input-container').innerHTML = inputsHTML;
+        };
 
-        // 4. Send the data to your Python app.py
-        async function getLivePrediction() {
-            const config = disasterConfig[activeModel];
-            const resultDiv = document.getElementById('result');
-            
-            let userInputs = {};
-            for (let i = 0; i < config.features.length; i++) {
-                let val = document.getElementById(`input-${i}`).value;
-                if (!val) { alert("Please fill all fields!"); return; }
-                userInputs[`f${i+1}`] = parseFloat(val);
-            }
+        async function getLivePrediction() {
+            const config = disasterConfig[activeModel];
+            const resultDiv = document.getElementById('result');
+            
+            let userInputs = {};
+            for (let i = 0; i < config.features.length; i++) {
+                let val = document.getElementById(`input-${i}`).value;
+                if (!val) { alert("Please fill all fields!"); return; }
+                userInputs[`f${i+1}`] = parseFloat(val);
+            }
 
-            resultDiv.innerHTML = "Analyzing AI...";
-            resultDiv.className = "";
+            resultDiv.innerHTML = "Analyzing AI...";
+            resultDiv.className = "";
 
-            try {
-                // Talks to app.py route: /predict/<disaster>
-                const response = await fetch(`https://disaster-ai-1-o9ui.onrender.com/predict/${activeModel}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(userInputs)
-                });
+            try {
+                const response = await fetch(`https://disaster-ai-1-o9ui.onrender.com/predict/${activeModel}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userInputs)
+                });
 
-                const answer = await response.json();
+                const answer = await response.json();
+                const guide = `<div class="guide-text"><b>Risk Guide:</b><br>0-30%: SAFE | 40-60%: MEDIUM | 70-100%: DANGER</div>`;
 
-                // Show result based on is_danger boolean from Python
-                if (answer.is_danger) {
-                    resultDiv.innerHTML = `🚨💀 DANGER DETECTED<br><span style="font-size: 16px;">AI Confidence: ${answer.probability}%</span>';
-                    resultDiv.className = "danger";
-                } else {
-                    resultDiv.innerHTML = `✅🦺 SAFE AREA<br><span style="font-size: 16px;">AI Confidence: ${answer.probability}%</span>`;
-                    resultDiv.className = "safe";
-                }
-            } catch (error) {
-                resultDiv.innerHTML = "Error: Is the Python Server (app.py) running?";
-                resultDiv.className = "danger";
-            }
-        }
-    </script>
+                if (answer.is_danger) {
+                    resultDiv.innerHTML = `🚨💀 DANGER DETECTED<br>Risk Level: ${answer.probability}% ${guide}`;
+                    resultDiv.className = "danger";
+                } else {
+                    resultDiv.innerHTML = `✅🦺 SAFE AREA<br>Risk Level: ${answer.probability}% ${guide}`;
+                    resultDiv.className = "safe";
+                }
+            } catch (error) {
+                resultDiv.innerHTML = "Error: Is the Python Server running?";
+                resultDiv.className = "danger";
+            }
+        }
+    </script>
 </body>
 </html>
