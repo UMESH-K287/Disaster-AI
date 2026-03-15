@@ -389,19 +389,19 @@ async function getLivePrediction() {
                        </div>`;
 
         if (prob <= 30) {
-            resultDiv.innerHTML = `✅ SAFE AREA<br>Risk Level: ${prob}% ${guide}`;
+            resultDiv.innerHTML = `✅🦺 SAFE AREA<br>Risk Level: ${prob}% ${guide}`;
             resultDiv.className = "safe";
         } 
         else if (prob >= 40 && prob <= 60) {
-            resultDiv.innerHTML = `⚠️ MEDIUM RISK<br>Risk Level: ${prob}% ${guide}`;
+            resultDiv.innerHTML = `⚠️⚡ MEDIUM RISK<br>Risk Level: ${prob}% ${guide}`;
             resultDiv.style.color = "#ffeb3b"; 
         } 
         else if (prob >= 70) {
-            resultDiv.innerHTML = `🚨 DANGER DETECTED<br>Risk Level: ${prob}% ${guide}`;
+            resultDiv.innerHTML = `🚨💀 DANGER DETECTED<br>Risk Level: ${prob}% ${guide}`;
             resultDiv.className = "danger";
         }
         else {
-            resultDiv.innerHTML = `⚖️ UNCERTAIN<br>Risk Level: ${prob}% ${guide}`;
+            resultDiv.innerHTML = `🤔💭 UNCERTAIN<br>Risk Level: ${prob}% ${guide}`;
             resultDiv.style.color = "#ffffff";
         }
     } catch (error) {
