@@ -20,23 +20,30 @@ models = {
 
 @app.route("/predict/<disaster>", methods=["POST"])
 def predict(disaster):
+    if disaster not in models:
+        return jsonify({"error": "Model not found"}), 404
 
     data = request.json
-    values = list(data.values())
+    
+    # CRITICAL FIX: Ensure the features are in order f1, f2, f3
+    # This matches the 'userInputs[`f${i+1}`]' from your JavaScript
+    try:
+        ordered_values = [data['f1'], data['f2'], data['f3']]
+    except KeyError:
+        return jsonify({"error": "Missing input fields"}), 400
 
     model = models[disaster]
+    input_array = np.array([ordered_values])
 
-    input_array = np.array([values])
-
-    prediction = int(model.predict(input_array)[0])
-    probability = float(model.predict_proba(input_array)[0][1])
+    # Faster: Get probability first, then decide if it's danger
+    prob_danger = float(model.predict_proba(input_array)[0][1])
+    is_danger = prob_danger >= 0.5
 
     return jsonify({
         "disaster": disaster,
-        "is_danger": True if prediction == 1 else False,
-        "probability": round(probability * 100, 2)
+        "is_danger": bool(is_danger),
+        "probability": round(prob_danger * 100, 2)
     })
-
 if __name__ == "__main__":
     print("Server running on http://127.0.0.1:5000")
     app.run(port=5000)
