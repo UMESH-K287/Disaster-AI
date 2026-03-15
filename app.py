@@ -20,31 +20,31 @@ models = {
 
 @app.route("/predict/<disaster>", methods=["POST"])
 def predict(disaster):
-    data = request.json
-    
-    # This list MUST match the order used in train_models.py
-    # f1 = Monsoon, f2 = Drainage, f3 = Siltation
     try:
+        data = request.json
+        # We must pull f1, f2, f3 in order to match the training data
         ordered_values = [
             float(data.get('f1', 0)), 
             float(data.get('f2', 0)), 
             float(data.get('f3', 0))
         ]
-    except ValueError:
-        return jsonify({"error": "Invalid input values"}), 400
+        
+        model = models[disaster]
+        input_array = np.array([ordered_values])
 
-    model = models[disaster]
-    input_array = np.array([ordered_values])
+        # Get probabilities for [Safe, Danger]
+        probs = model.predict_proba(input_array)[0]
+        
+        # WE NEED INDEX 1 (Danger Probability)
+        danger_prob = float(probs[1]) 
+        
+        # Decide if it's danger based on 50% threshold
+        is_danger = danger_prob >= 0.5
 
-    # Get the probability of DANGER (index 1)
-    probabilities = model.predict_proba(input_array)[0]
-    prob_danger = float(probabilities[1]) 
-    
-    # If danger is 50% or higher, mark as is_danger=True
-    is_danger = prob_danger >= 0.5
-
-    return jsonify({
-        "disaster": disaster,
-        "is_danger": bool(is_danger),
-        "probability": round(prob_danger * 100, 2)
-    })
+        return jsonify({
+            "disaster": disaster,
+            "is_danger": bool(is_danger),
+            "probability": round(danger_prob * 100, 2)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
