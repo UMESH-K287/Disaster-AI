@@ -6,56 +6,56 @@ const portfolioData = [
         id: 1,
         title: 'Flood',
         description: 'Flood: We predict exactly where and when the water will rise to keep your neighborhood safe.',
-        image: 'images/flood-image.jpg',
+        image: 'flood-image.jpg',
         tech: ['Monsoon Intensity', 'Drainage Systems', 'Siltation Score']
     },
     {
         id: 2,
         title: 'Cyclone',
         description: 'Cyclone: We track powerful storms in real-time to tell you exactly where they will hit.',
-        image: 'images/cyclone-image.jpg',
+        image: 'cyclone-image.jpg',
         tech: ['Atmospheric Pressure', 'Wind Speed', 'Humidity']
     },
     {
         id: 3,
         title: 'Earth Quake',
         description: 'Earthquake: We detect tiny vibrations in the ground to give you life-saving seconds of warning.',
-        image: 'images/earthquake-image.jpg',
+        image: 'earthquake-image.jpg',
         tech: ['Magnitude', 'Longitude', 'Depth']
     },
     {
         id: 4,
         title: 'Heat Wave',
         description: 'Heatwave: We find dangerous temperature spikes early so people can stay cool and safe.',
-        image: 'images/heatwave-images.jpg',
+        image: 'heatwave-images.jpg',
         tech: ['Max Temp', 'Average Temp', 'Relative Humidity']
     },
     {
         id: 5,
         title: 'Forest Fire',
         description: 'Forest Fire: We monitor dry land and wind to stop small sparks from becoming big fires.',
-        image: 'images/forestfire-images.jpg',
+        image: 'forestfire-images.jpg',
         tech: ['Humidity', 'Fuel Moisture', 'Temperature']
     },
     {
         id: 6,
         title: 'Tsunami',
         description: 'Tsunami: We watch the ocean floor to warn coastal towns before the waves arrive.',
-        image: 'images/tsunami-images.jpg',
+        image: 'tsunami-images.jpg',
         tech: ['Significance Score', 'Magnitude', 'Depth']
     },
     {
         id: 7,
         title: 'Drought',
         description: 'Drought: We track water levels and soil to help farmers prepare for long dry spells.',
-        image: 'images/drought-image.jpg',
+        image: 'drought-image.jpg',
         tech: ['Precipitation', 'Humidity', 'Average Temperature']
     },
     {
         id: 8,
         title: 'Land Slide',
         description: 'Landslide: We study wet soil and steep hills to predict which slopes might slide.',
-        image: 'images/landslide-images.jpg',
+        image: 'landslide-images.jpg',
         tech: ['Slope Steepness', 'Precipitation', 'Terrain Curvature']
     }
 ];
