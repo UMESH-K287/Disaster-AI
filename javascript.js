@@ -372,7 +372,7 @@ async function getLivePrediction() {
     resultDiv.innerHTML = "Consulting AI...";
 
     try {
-        const response = await fetch(`http://https://disaster-ai-1-o9ui.onrender.com/predict/${activeModel}`, {
+        const response = await fetch(`https://disaster-ai-1-o9ui.onrender.com/predict/${activeModel}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
