@@ -112,7 +112,7 @@
 
             try {
                 // Talks to app.py route: /predict/<disaster>
-                const response = await fetch(`http://127.0.0.1:5000/predict/${activeModel}`, {
+                const response = await fetch(`http://https://disaster-ai-20kn.onrender.com/predict/${activeModel}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userInputs)
